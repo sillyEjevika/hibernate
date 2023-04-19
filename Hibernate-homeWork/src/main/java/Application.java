@@ -1,5 +1,7 @@
 
+import dao.CityDao;
 import dao.EmployeeDao;
+import dao.impl.CityDaoImpl;
 import dao.impl.EmployeeDaoImpl;
 import model.City;
 import model.Employee;
@@ -8,33 +10,23 @@ import java.util.List;
 public class Application {
     public static void main(String[] args) {
 
-        EmployeeDao employeeDao = new EmployeeDaoImpl();
-        City tula= new City(3,"Тула");
-        City kaluga = new City(7, "Подольск");
+        EmployeeDao employeeDAO = new EmployeeDaoImpl();
+        CityDao cityDao = new CityDaoImpl();
 
-        Employee manua = employeeDao.create(new Employee("Маня", "Федотова","жен", 22, 3));
-        System.out.println("Добавлен сотрудник" + manua);
-        Employee vika = employeeDao.create(new Employee("Вика", "Сидорова","жен", 25, 7));
-        System.out.println("Добавлен сотрудник" + vika);;
-
-        System.out.println( "Все сотрудники ");
-        employeeDao.readAll().forEach(System.out::println);
-
-        /*employeeDao.readById(vika.getId())
-                .ifPresent(employee -> System.out.println("Найден сотрудник " + employee));*/
-        System.out.println(employeeDao.readById(42));
-
-        vika.setName("Катя");
-        vika.setAge(75);
-        vika.setCity(3);
-        vika = employeeDao.updateById(vika);
-        System.out.println("Обновленный сотрудник " + vika);
-
-        employeeDao.deleteById(manua);
-
-        System.out.println("Все сотрудники");
-        employeeDao.readAll().forEach(System.out::println);
-
+        int cityId1 = 19;
+        int cityId2 = 18;
+        Employee employee1 = new Employee("Маня", "Федотова", "female", 22);
+        Employee employee2 = new Employee("Вика", "Сидорова", "female", 25);
+        Employee employee3 = new Employee("Ваня", "Макаров", "male", 38);
+        employeeDAO.addCity(cityId1, employee1);
+        employeeDAO.addCity(cityId2, employee2);
+        employeeDAO.addCity(cityId2, employee3);
+//        employeeDAO.createEmployee(employee1);
+//        Employee test = new Employee("a", "aa", "f", 25, 7);
+//        employeeDAO.updateEmployee(1, test);
+//        System.out.println(employeeDAO.getEmployee(1));
+//        employeeDAO.deleteEmployee(20);
+//        System.out.println(employeeDAO.getEmployee(20));
     }
 
 }
