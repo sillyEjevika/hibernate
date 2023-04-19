@@ -15,4 +15,5 @@ public interface EmployeeDao {
     Employee updateById(Employee employee);
 
     void deleteById(Employee employee);
+    void addCity(int cityId, Employee employee);
 }

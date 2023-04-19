@@ -1,6 +1,7 @@
 package dao.impl;
 import dao.EmployeeDao;
 import dao.HibernateSessionFactoryUtil;
+import model.City;
 import model.Employee;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -9,21 +10,13 @@ import javax.persistence.EntityTransaction;
 import java.util.List;
 
 public class EmployeeDaoImpl implements EmployeeDao {
-   /* private static final String INSERT = "INSERT INTO employee (name, surname, gender, age, city_id) " +
-            "VALUES (?, ?, ?, ?, ?)";
-
-    private static final String FIND_LAST_EMPLOYEE = "SELECT * FROM employee ORDER BY id DESC LIMIT 1 ";
-    private static final String FIND_BY_ID = "SELECT * FROM employee WHERE id = ? ";
-    private static final String FIND_ALL = "SELECT * FROM employee ";
-    private static final String UPDATE = "UPDATE employee SET name=?, surname = ?, gender= ?, age = ?, city_id = ? WHERE id = ?";
-    private static final String DELETE = "DELETE FROM employee WHERE id = ?";*/
-    //private final CityDao cityDao = new CityDaoImpl();
+    private HibernateSessionFactoryUtil hibernateManager = HibernateSessionFactoryUtil.getInstance();
+    private volatile Employee employee;
+    private volatile List<Employee> employeeList;
 
     @Override
     public Employee create(Employee employee) {
-        /*if (employee.getCity()!= null && cityDao.findById(employee.getCity()).isEmpty()){
-            employee.setCity(null);
-        }*/
+
         try (Session session = HibernateSessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             //Serializable createdId = session.save(employee);
@@ -69,18 +62,13 @@ public class EmployeeDaoImpl implements EmployeeDao {
         }
     }
 
-    /*private Employee readEmployee(ResultSet resultSet) throws SQLException {
-        Long cityId = resultSet.getObject("city_id", Long.class);
-        City city = null;
-        if (cityId != null) {
-            city = (City) cityDao.findById(cityId).orElse(null);
-        }
-        return new Employee(resultSet.getLong("id"),
-                resultSet.getString("name"),
-                resultSet.getString("surname"),
-                resultSet.getString("gender"),
-                resultSet.getInt("age"),
-                city);
+    @Override
+    public void addCity(int cityId, Employee employee) {
+        hibernateManager.withEntityManager(em -> {
+            City city = em.find(City.class, cityId);
+            city.add(employee);
+            em.persist(employee);
+        });
+    }
 
-    }*/
 }
